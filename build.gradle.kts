@@ -1,5 +1,13 @@
+buildscript {
+    repositories {
+        google()
+        mavenCentral()
+    }
+}
+
+
 plugins {
-    kotlin("multiplatform").apply(false)
-    kotlin("plugin.serialization").apply(false)
-    id("com.android.library").apply(false)
+    alias(libs.plugins.android.application) apply false
+    alias(libs.plugins.kotlin.jvm) apply false
+    alias(libs.plugins.kotlin.serialization) apply false
 }

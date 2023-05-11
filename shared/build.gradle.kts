@@ -18,22 +18,15 @@ kotlin {
         /* Main source sets */
         val commonMain by getting {
             dependencies {
-                implementation(libs.kotlinx.coroutines.core)
-                implementation(libs.touchlab.kermit)
-                implementation(libs.ktor.client.core)
-                implementation(libs.kotlinx.serialization.json)
-                implementation(libs.kotlinx.datetime)
             }
         }
         val nativeMain by creating
         val androidMain by getting {
             dependencies {
-                implementation(libs.ktor.client.okhttp)
             }
         }
         val iosMain by creating {
             dependencies {
-                implementation(libs.ktor.client.ios)
             }
         }
         val linuxMain by creating
@@ -65,7 +58,6 @@ kotlin {
         /* Test source sets */
         val commonTest by getting {
             dependencies {
-                implementation(kotlin("test"))
             }
         }
         val nativeTest by creating
@@ -104,5 +96,12 @@ android {
     compileSdk = 31
     defaultConfig {
         minSdk = 21
+    }
+}
+
+android {
+    compileOptions {
+        sourceCompatibility = JavaVersion.VERSION_17
+        targetCompatibility = JavaVersion.VERSION_17
     }
 }
