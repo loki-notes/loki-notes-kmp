@@ -1,6 +1,6 @@
 [versions]
 # Kotlin
-kotlin = "1.8.21"
+kotlin = "1.8.20"
 coroutines = "1.6.4"
 ksp = "1.8.21-1.0.11"
 # Dependency Injection
@@ -14,7 +14,7 @@ android_gradle = "7.4.0"
 # Compose
 androidx_compose_bom = "2023.05.00"
 androidx_compose_material3 = "1.1.0-rc01"
-compose_compiler = "1.4.7"
+compose_compiler = "1.4.5"
 androidx_compose_runtime_tracing = "1.0.0-alpha03"
 accompanist = "0.28.0"
 compose_destinations = "1.8.32-beta"

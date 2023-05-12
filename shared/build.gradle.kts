@@ -29,6 +29,11 @@ kotlin {
             dependencies {
             }
         }
+        jvm("desktop") {
+            compilations.all {
+                kotlinOptions.jvmTarget = "17"
+            }
+        }
         val linuxMain by creating
         val macosMain by creating
         val windowsMain by creating
