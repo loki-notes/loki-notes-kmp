@@ -13,16 +13,11 @@ import org.lokinotes.platform
 fun main() = application {
     Window(
         onCloseRequest = ::exitApplication,
-        title = "LokiNotes",
+        title = "Kanban board (Experimental)",
         state = rememberWindowState(width = 1050.dp, height = 700.dp),
     ) {
         MaterialTheme {
-            Box(
-                contentAlignment = Alignment.Center,
-                modifier = Modifier.fillMaxSize()
-            ) {
-                Text(text = platform)
-            }
+            KanbanBoard(fakeCards())
         }
     }
 }

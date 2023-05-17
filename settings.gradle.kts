@@ -20,3 +20,4 @@ rootProject.name = "LokiNotes"
 
 include(":shared")
 include(":android", ":desktop", ":ios")
+include(":experimental:kanban-board")
