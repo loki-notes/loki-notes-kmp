@@ -16,6 +16,7 @@ kotlin {
                 implementation(projects.shared)
 
                 implementation(compose.desktop.currentOs)
+                implementation(libs.coroutines.core)
             }
         }
     }
