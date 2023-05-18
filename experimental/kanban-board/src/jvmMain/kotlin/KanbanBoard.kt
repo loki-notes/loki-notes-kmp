@@ -58,7 +58,7 @@ fun KanbanBoard(state: ViewState, onUpdateItems: (String, KanbanGroup.Item) -> U
                     Column(modifier = Modifier.width(250.dp)) {
                         ColumnName(group.name, group.color)
 
-                        NewTaskButton { }
+                        NewTaskButton()
 
                         KanbanColumn(group, onUpdateItems)
                     }
@@ -89,7 +89,7 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
         contentPadding = PaddingValues(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(group.items) { card ->
+        items(group.items, key = { card -> card.title}) { card ->
             DragTarget(dataToDrop = card) {
                 BoardItem(card)
             }
@@ -147,7 +147,7 @@ fun BoardItem(item: KanbanGroup.Item) {
 }
 
 @Composable
-fun NewTaskButton(onClick: () -> Unit) {
+fun NewTaskButton() {
     Row(
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.Center,

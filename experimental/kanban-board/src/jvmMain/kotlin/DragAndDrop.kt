@@ -16,6 +16,7 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
+import domain.KanbanGroup
 
 @Composable
 fun DraggableContent(
@@ -72,6 +73,7 @@ fun <T> DragTarget(
                 currentState.isDragging = true
                 currentState.dragPosition = currentPosition + it
                 currentState.draggableComposable = content
+                println("Data: ${(currentState.dataToDrop as? KanbanGroup.Item)?.title}")
             }, onDrag = { change, dragAmount ->
                 change.consume()
                 currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
@@ -90,7 +92,7 @@ fun <T> DragTarget(
 @Composable
 fun <T> DropTarget(
     modifier: Modifier = Modifier,
-    content: @Composable() (BoxScope.(isInBound: Boolean, data: T?) -> Unit),
+    content: @Composable (BoxScope.(isInBound: Boolean, data: T?) -> Unit),
 ) {
 
     val dragInfo = LocalDragTargetInfo.current
