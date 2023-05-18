@@ -35,6 +35,7 @@ import androidx.compose.ui.graphics.PathEffect
 import androidx.compose.ui.graphics.drawscope.Stroke
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import domain.KanbanGroup
 
 @Composable
@@ -56,7 +57,7 @@ fun KanbanBoard(state: ViewState, onUpdateItems: (String, KanbanGroup.Item) -> U
             ) {
                 items(state.kanbanGroups) { group ->
                     Column(modifier = Modifier.width(250.dp)) {
-                        ColumnName(group.name, group.color)
+                        ColumnName(group.name, group.color, group.items.count())
 
                         NewTaskButton()
 
@@ -69,7 +70,7 @@ fun KanbanBoard(state: ViewState, onUpdateItems: (String, KanbanGroup.Item) -> U
 }
 
 @Composable
-fun ColumnName(title: String, color: Color) {
+fun ColumnName(title: String, color: Color, count: Int) {
     Row(
         modifier = Modifier.fillMaxWidth().padding(8.dp),
         verticalAlignment = Alignment.CenterVertically,
@@ -79,7 +80,17 @@ fun ColumnName(title: String, color: Color) {
             drawCircle(color = color)
         }
 
-        Text(text = title)
+        Text(text = title, fontWeight = FontWeight.Bold)
+
+        Text(
+            text = count.toString(),
+            modifier = Modifier
+                .clip(CircleShape)
+                .background(Color.White)
+                .padding(horizontal = 12.dp, vertical = 4.dp),
+            fontSize = 14.sp,
+            fontWeight = FontWeight.Bold
+        )
     }
 }
 
@@ -89,7 +100,7 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
         contentPadding = PaddingValues(vertical = 16.dp),
         verticalArrangement = Arrangement.spacedBy(8.dp)
     ) {
-        items(group.items, key = { card -> card.title}) { card ->
+        items(group.items, key = { card -> card.title }) { card ->
             DragTarget(dataToDrop = card) {
                 BoardItem(card)
             }
