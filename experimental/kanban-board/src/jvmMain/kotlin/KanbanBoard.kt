@@ -1,3 +1,9 @@
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.ExperimentalAnimationApi
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
+import androidx.compose.animation.scaleIn
+import androidx.compose.animation.scaleOut
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -94,15 +100,16 @@ fun ColumnName(title: String, color: Color, count: Int) {
     }
 }
 
+@OptIn(ExperimentalAnimationApi::class)
 @Composable
 fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -> Unit) {
     LazyColumn(
         contentPadding = PaddingValues(vertical = 16.dp),
-        verticalArrangement = Arrangement.spacedBy(8.dp)
+        verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(group.items, key = { card -> card.title }) { card ->
             DragTarget(dataToDrop = card) {
-                BoardItem(card)
+                BoardItem(item = card)
             }
         }
         item {
@@ -110,7 +117,13 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
                 if (data != null) {
                     onUpdateItems(group.name, data)
                 }
-                DragAndDropPlaceholder(isActiveArea = isInBound)
+                AnimatedVisibility(
+                    visible = LocalDragTargetInfo.current.isDragging,
+                    enter = fadeIn() + scaleIn(initialScale = .8f),
+                    exit = fadeOut() + scaleOut(targetScale = .8f)
+                ) {
+                    DragAndDropPlaceholder(isActiveArea = isInBound)
+                }
             }
         }
     }

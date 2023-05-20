@@ -1,3 +1,4 @@
+import androidx.compose.foundation.gestures.detectDragGestures
 import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
@@ -30,14 +31,16 @@ fun DraggableContent(
     ) {
         Box(modifier = modifier.fillMaxSize()) {
             content()
+
             if (state.isDragging) {
-                var targetSize by remember {
-                    mutableStateOf(IntSize.Zero)
-                }
+                var targetSize by remember { mutableStateOf(IntSize.Zero) }
+
                 Box(modifier = Modifier
                     .graphicsLayer {
                         val offset = (state.dragPosition + state.dragOffset)
+
                         alpha = if (targetSize == IntSize.Zero) 0f else .66f
+
                         translationX = offset.x.minus(targetSize.width / 2)
                         translationY = offset.y.minus(targetSize.height / 2)
                     }
@@ -66,12 +69,11 @@ fun <T> DragTarget(
             currentPosition = it.localToWindow(Offset.Zero)
         }
         .pointerInput(Unit) {
-            detectDragGesturesAfterLongPress(onDragStart = {
+            detectDragGestures(onDragStart = {
                 currentState.dataToDrop = dataToDrop
                 currentState.isDragging = true
                 currentState.dragPosition = currentPosition + it
                 currentState.draggableComposable = content
-                println("Data: ${(currentState.dataToDrop as? KanbanGroup.Item)?.title}")
             }, onDrag = { change, dragAmount ->
                 change.consume()
                 currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
