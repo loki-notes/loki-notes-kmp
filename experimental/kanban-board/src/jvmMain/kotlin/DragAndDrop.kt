@@ -1,5 +1,4 @@
 import androidx.compose.foundation.gestures.detectDragGestures
-import androidx.compose.foundation.gestures.detectDragGesturesAfterLongPress
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxScope
 import androidx.compose.foundation.layout.fillMaxSize
@@ -17,17 +16,16 @@ import androidx.compose.ui.input.pointer.pointerInput
 import androidx.compose.ui.layout.boundsInWindow
 import androidx.compose.ui.layout.onGloballyPositioned
 import androidx.compose.ui.unit.IntSize
-import domain.KanbanGroup
 
 @Composable
 fun DraggableContent(
     modifier: Modifier = Modifier,
     content: @Composable BoxScope.() -> Unit,
 ) {
-    val state = remember { DragTargetInfo() }
+    val state = remember { CardDragState() }
 
     CompositionLocalProvider(
-        LocalDragTargetInfo provides state
+        LocalCardDragState provides state
     ) {
         Box(modifier = modifier.fillMaxSize()) {
             content()
@@ -37,7 +35,7 @@ fun DraggableContent(
 
                 Box(modifier = Modifier
                     .graphicsLayer {
-                        val offset = (state.dragPosition + state.dragOffset)
+                        val offset = (state.position + state.offset)
 
                         alpha = if (targetSize == IntSize.Zero) 0f else .66f
 
@@ -48,7 +46,7 @@ fun DraggableContent(
                         targetSize = it.size
                     }
                 ) {
-                    state.draggableComposable?.invoke()
+                    state.composable?.invoke()
                 }
             }
         }
@@ -58,11 +56,11 @@ fun DraggableContent(
 @Composable
 fun <T> DragTarget(
     modifier: Modifier = Modifier,
-    dataToDrop: T,
+    data: T,
     content: @Composable (() -> Unit),
 ) {
     var currentPosition by remember { mutableStateOf(Offset.Zero) }
-    val currentState = LocalDragTargetInfo.current
+    val currentState = LocalCardDragState.current
 
     Box(modifier = modifier
         .onGloballyPositioned {
@@ -70,18 +68,18 @@ fun <T> DragTarget(
         }
         .pointerInput(Unit) {
             detectDragGestures(onDragStart = {
-                currentState.dataToDrop = dataToDrop
+                currentState.data = data
                 currentState.isDragging = true
-                currentState.dragPosition = currentPosition + it
-                currentState.draggableComposable = content
+                currentState.position = currentPosition + it
+                currentState.composable = content
             }, onDrag = { change, dragAmount ->
                 change.consume()
-                currentState.dragOffset += Offset(dragAmount.x, dragAmount.y)
+                currentState.offset += dragAmount
             }, onDragEnd = {
                 currentState.isDragging = false
-                currentState.dragOffset = Offset.Zero
+                currentState.offset = Offset.Zero
             }, onDragCancel = {
-                currentState.dragOffset = Offset.Zero
+                currentState.offset = Offset.Zero
                 currentState.isDragging = false
             })
         }) {
@@ -94,31 +92,31 @@ fun <T> DropTarget(
     modifier: Modifier = Modifier,
     content: @Composable (BoxScope.(isInBound: Boolean, data: T?) -> Unit),
 ) {
-
-    val dragInfo = LocalDragTargetInfo.current
-    val dragPosition = dragInfo.dragPosition
-    val dragOffset = dragInfo.dragOffset
-    var isCurrentDropTarget by remember {
-        mutableStateOf(false)
-    }
+    val dragState = LocalCardDragState.current
+    var isCurrentDropTarget by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.onGloballyPositioned {
-        it.boundsInWindow().let { rect ->
-            isCurrentDropTarget = rect.contains(dragPosition + dragOffset)
-        }
+        it.boundsInWindow()
+            .let { rect ->
+                isCurrentDropTarget = rect.contains(dragState.position + dragState.offset)
+            }
     }) {
-        val data =
-            if (isCurrentDropTarget && !dragInfo.isDragging) dragInfo.dataToDrop as T? else null
+        val data = if (isCurrentDropTarget && !dragState.isDragging) {
+            dragState.data as? T?
+        } else {
+            null
+        }
+
         content(isCurrentDropTarget, data)
     }
 }
 
-class DragTargetInfo {
+class CardDragState {
+    var data by mutableStateOf<Any?>(null)
     var isDragging: Boolean by mutableStateOf(false)
-    var dragPosition by mutableStateOf(Offset.Zero)
-    var dragOffset by mutableStateOf(Offset.Zero)
-    var draggableComposable by mutableStateOf<(@Composable () -> Unit)?>(null)
-    var dataToDrop by mutableStateOf<Any?>(null)
+    var position by mutableStateOf(Offset.Zero)
+    var offset by mutableStateOf(Offset.Zero)
+    var composable by mutableStateOf<(@Composable () -> Unit)?>(null)
 }
 
-val LocalDragTargetInfo = compositionLocalOf { DragTargetInfo() }
+val LocalCardDragState = compositionLocalOf { CardDragState() }

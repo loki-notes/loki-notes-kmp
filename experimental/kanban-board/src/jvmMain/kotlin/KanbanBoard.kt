@@ -108,7 +108,7 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(group.items, key = { card -> card.title }) { card ->
-            DragTarget(dataToDrop = card) {
+            DragTarget(data = card) {
                 BoardItem(item = card)
             }
         }
@@ -118,7 +118,7 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
                     onUpdateItems(group.name, data)
                 }
                 AnimatedVisibility(
-                    visible = LocalDragTargetInfo.current.isDragging,
+                    visible = LocalCardDragState.current.isDragging,
                     enter = fadeIn() + scaleIn(initialScale = .8f),
                     exit = fadeOut() + scaleOut(targetScale = .8f)
                 ) {
