@@ -108,7 +108,13 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
         verticalArrangement = Arrangement.spacedBy(8.dp),
     ) {
         items(group.items, key = { card -> card.title }) { card ->
-            DragTarget(data = card) {
+            DragTarget(
+                data = card,
+                key = { item -> item?.title == card.title },
+                placeholder = {
+                    DragAndDropPlaceholder(modifier = Modifier.fillMaxSize(), isActiveArea = true)
+                }
+            ) {
                 BoardItem(item = card)
             }
         }
@@ -211,8 +217,8 @@ fun DragAndDropPlaceholder(modifier: Modifier = Modifier, isActiveArea: Boolean)
         if (isActiveArea) positive else placeholder
     }
 
-    Box(modifier = modifier, contentAlignment = Alignment.Center) {
-        Canvas(Modifier.fillMaxWidth().height(72.dp)) {
+    Box(modifier = modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+        Canvas(Modifier.fillMaxSize().height(72.dp)) {
             drawRoundRect(
                 color = accentColor,
                 style = stroke,
