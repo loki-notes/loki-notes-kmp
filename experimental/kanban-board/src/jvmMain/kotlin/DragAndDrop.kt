@@ -113,12 +113,14 @@ fun <T> DropTarget(
     content: @Composable (BoxScope.(isInBound: Boolean, data: T?) -> Unit),
 ) {
     val dragState = LocalCardDragState.current
+    val dragPosition = dragState.position
+    val dragOffset = dragState.offset
     var isCurrentDropTarget by remember { mutableStateOf(false) }
 
     Box(modifier = modifier.onGloballyPositioned {
         it.boundsInWindow()
             .let { rect ->
-                isCurrentDropTarget = rect.contains(dragState.position + dragState.offset)
+                isCurrentDropTarget = rect.contains(dragPosition + dragOffset)
             }
     }) {
         val data = if (isCurrentDropTarget && !dragState.isDragging) {

@@ -97,7 +97,7 @@ fun fakeData(): List<KanbanGroup> {
                 KanbanGroup.Item(
                     group = "Done",
                     title = "Branding, visual identity",
-                    description = "Create a concept based on te research and insights gathered during the discovery phase of the project...",
+                    description = "Create a concept based...",
                     tags = listOf(boardingTag)
                 ),
                 KanbanGroup.Item(

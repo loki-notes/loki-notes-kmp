@@ -34,6 +34,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.geometry.CornerRadius
 import androidx.compose.ui.graphics.Color
@@ -112,7 +113,7 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
                 data = card,
                 key = { item -> item?.title == card.title },
                 placeholder = {
-                    DragAndDropPlaceholder(modifier = Modifier.fillMaxSize(), isActiveArea = true)
+                    BoardItem(modifier = Modifier.alpha(0.33f), item = card)
                 }
             ) {
                 BoardItem(item = card)
@@ -137,9 +138,9 @@ fun KanbanColumn(group: KanbanGroup, onUpdateItems: (String, KanbanGroup.Item) -
 
 @OptIn(ExperimentalLayoutApi::class)
 @Composable
-fun BoardItem(item: KanbanGroup.Item) {
+fun BoardItem(modifier: Modifier = Modifier, item: KanbanGroup.Item) {
     Column(
-        modifier = Modifier.width(250.dp)
+        modifier = modifier.width(250.dp)
             .clip(RoundedCornerShape(8.dp))
             .border(
                 2.dp,
