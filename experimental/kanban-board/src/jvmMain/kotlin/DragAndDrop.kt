@@ -96,11 +96,7 @@ fun <T> DragTarget(
             }
     ) {
         if (currentState.isDragging && key(currentState.data as? T?) && placeholder != null) {
-            Box(
-                modifier = Modifier.size(currentState.size.width.dp, currentState.size.height.dp)
-            ) {
-                placeholder()
-            }
+            placeholder()
         } else {
             content()
         }
